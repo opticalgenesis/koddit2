@@ -54,8 +54,8 @@ class KodditAuth {
             return baseUrl
         }
 
-        fun sendPostData(code: String, redirectUrl: String, clientId: String): AuthenticationObject? {
-            var obj: AuthenticationObject? = null
+        fun sendPostData(code: String, redirectUrl: String, clientId: String): String? {
+            var accessToken: String? = null
 
             val postBody = "grant_type=authorization_code&code=$code&redirect_uri=$redirectUrl"
 
@@ -76,8 +76,8 @@ class KodditAuth {
             authObject.enqueue(object : Callback<AuthenticationObject> {
                 override fun onResponse(call: Call<AuthenticationObject>, response: Response<AuthenticationObject>) {
                     if (response.isSuccessful) {
-                        obj = response.body()
-                        Log.d("KODDIT_RAW_RESPONSE", "Raw response: ${obj?.accessToken}")
+                        val auth = response.body()!!
+                        accessToken = auth.accessToken
                         Log.d("KODDIT_RESPONSE_TAG", response.code().toString())
                     } else {
                         Log.e("KODDIT_ERROR", "POST failed with code ${response.code()}")
@@ -89,7 +89,7 @@ class KodditAuth {
                     t?.printStackTrace()
                 }
             })
-            return obj
+            return accessToken
         }
     }
 
