@@ -72,9 +72,9 @@ class KodditAuth {
                     .addConverterFactory(GsonConverterFactory.create()).build()
 
             val authInterface: KodditAuthInterface = retrofit.create(KodditAuthInterface::class.java)
-            val authObject: Call<Void> = authInterface.getAccessToken(postBody)
-            authObject.enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+            val authObject: Call<AuthenticationObject> = authInterface.getAccessToken(postBody)
+            authObject.enqueue(object : Callback<AuthenticationObject> {
+                override fun onResponse(call: Call<AuthenticationObject>, response: Response<AuthenticationObject>) {
                     if (response.isSuccessful) {
                         Log.d("KODDIT_RAW_RESPONSE", "Raw response: ${response.body()}")
                         Log.d("KODDIT_RESPONSE_TAG", response.code().toString())
@@ -83,7 +83,7 @@ class KodditAuth {
                     }
                 }
 
-                override fun onFailure(call: Call<Void>?, t: Throwable?) {
+                override fun onFailure(call: Call<AuthenticationObject>?, t: Throwable?) {
                     Log.e("KODDIT_TAG", "Error thrown by Retrofit")
                     t?.printStackTrace()
                 }
@@ -96,6 +96,6 @@ class KodditAuth {
     interface KodditAuthInterface {
         @FormUrlEncoded()
         @POST("api/v1/access_token")
-        fun getAccessToken(@Field("body") body: String): Call<Void>
+        fun getAccessToken(@Field("body") body: String): Call<AuthenticationObject>
     }
 }
